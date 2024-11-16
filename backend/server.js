@@ -83,6 +83,27 @@ app.get('/api/books/search', async (req, res) => {
     }
 });
 
+app.get('/api/books/stats', async (req, res) => {
+    try {
+        const [totalBooks] = await db.query('SELECT COUNT(*) as total FROM books');
+        const [authorCount] = await db.query('SELECT COUNT(DISTINCT author) as total FROM books');
+        const [latestBook] = await db.query('SELECT * FROM books ORDER BY created_at DESC LIMIT 1');
+        const [oldestBook] = await db.query('SELECT * FROM books ORDER BY published_at ASC LIMIT 1');
+
+        res.status(200).json({
+            statistics: {
+                total_books: totalBooks[0].total,
+                total_authors: authorCount[0].total,
+                latest_book: latestBook[0],
+                oldest_book: oldestBook[0]
+            }
+        });
+    } catch (err) {
+        console.error('Error fetching book statistics:', err);
+        res.status(500).json({ message: 'Error fetching book statistics' });
+    }
+});
+
 
 app.put('/api/books/:id', async (req,res) => {
     const id = req.params.id
@@ -164,6 +185,8 @@ app.get('/api/books/:id', async (req,res) => {
         
     }
 })
+
+
 
  
 

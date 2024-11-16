@@ -44,9 +44,47 @@ app.get('/api/books', async (req, res) => {
     }
 });
 
-app.put('/api/books/:id', async (req,res) => {
-    console.log('Received PUT request for book ID:', req.params.id); // Debugging log
+app.get('/api/books/search', async (req, res) => {
+    const { title, author } = req.query;
+    
+    if (!title && !author) {
+        return res.status(400).json({ message: 'At least one search parameter (title or author) is required' });
+    }
 
+    let query = `SELECT * FROM books WHERE `;
+    const conditions = [];
+    const params = [];
+
+    if (title) {
+        conditions.push(`title LIKE ?`);
+        params.push(`%${title}%`);
+    }
+
+    if (author) {
+        conditions.push(`author LIKE ?`);
+        params.push(`%${author}%`);
+    }
+
+    query += conditions.join(' OR ');
+
+    try {
+        const [results] = await db.query(query, params);
+
+        if(results.length === 0){
+            return res.status(404).json({message: 
+                'nothing found'
+            })
+        }
+
+        res.status(200).json({ data: results });
+    } catch (err) {
+        console.error('Error searching books:', err);
+        res.status(500).json({ message: 'Error searching books' });
+    }
+});
+
+
+app.put('/api/books/:id', async (req,res) => {
     const id = req.params.id
     const {title, author, published_at} = req.body
 
@@ -104,6 +142,30 @@ app.delete('/api/books/:id', async (req,res) => {
         
     }
 })
+
+app.get('/api/books/:id', async (req,res) => {
+    const id = req.params.id
+
+    try {
+
+        const [result] = await db.query('SELECT * FROM books WHERE id=?',[id])
+
+        if(result.length === 0){
+            return res.status(404).json({message
+                : "Book not found"
+            })
+        }
+
+        return res.json({
+            data: result[0]
+        })
+        
+    } catch (err) {
+        
+    }
+})
+
+ 
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

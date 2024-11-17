@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BookCard from "./bookCard";
+import BookCard from "./BookCard";
 
 const url = import.meta.env.VITE_APP_URL || 'http://localhost:8000';
 

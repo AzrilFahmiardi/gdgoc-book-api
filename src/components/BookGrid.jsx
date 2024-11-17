@@ -4,7 +4,7 @@ import BookCard from "./BookCard";
 
 const url = import.meta.env.VITE_APP_URL || 'http://localhost:8000';
 
-const BookGrid = ({ isSearching, searchResults, onEdit, onDelete }) => {
+const BookGrid = ({ isSearching, searchResults, onEdit, onDelete, refreshTrigger }) => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -22,14 +22,14 @@ const BookGrid = ({ isSearching, searchResults, onEdit, onDelete }) => {
         if (!isSearching) {
             getAllbooks();
         }
-    }, [isSearching]);
+    }, [isSearching, refreshTrigger]);
 
     const displayBooks = isSearching ? searchResults : books;
 
     return (
         <div className="flex justify-start flex-wrap gap-8">
             {loading ? (
-                Array(books.length).fill(null).map((_, index) => (
+                Array(5).fill(null).map((_, index) => (
                     <BookCard key={`loading-${index}`} />
                 ))
             ) : displayBooks.length === 0 ? (

@@ -18,6 +18,7 @@ function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const getBookStat = async () => {
     try {
@@ -60,6 +61,7 @@ function App() {
         await axios.post(`${url}/api/books`, formData);
         getBookStat();
         setIsModalOpen(false);
+        setRefreshTrigger(prev => prev + 1);
         if (isSearching) {
             handleSearch();
         }
@@ -67,13 +69,14 @@ function App() {
         console.error("Error adding book:", err);
         alert("Failed to add book");
     }
-};
+  };
 
   const handleEditBook = async (formData) => {
       try {
           await axios.put(`${url}/api/books/${editingBook.id}`, formData);
           getBookStat();
           setEditingBook(null);
+          setRefreshTrigger(prev => prev + 1);
           if (isSearching) {
               handleSearch();
           }
@@ -87,6 +90,7 @@ function App() {
       try {
           await axios.delete(`${url}/api/books/${bookId}`);
           getBookStat();
+          setRefreshTrigger(prev => prev + 1);
           if (isSearching) {
               handleSearch();
           }
@@ -171,21 +175,22 @@ function App() {
             searchResults={searchResults}
             onEdit={setEditingBook}
             onDelete={handleDeleteBook}
+            refreshTrigger={refreshTrigger}
         />
       </div>
 
-    <BookForm 
-        isOpen={isModalOpen || !!editingBook}
-        onClose={() => {
-            setIsModalOpen(false);
-            setEditingBook(null);
-        }}
-        onSubmit={editingBook ? handleEditBook : handleAddBook}
-        initialData={editingBook}
-        mode={editingBook ? 'edit' : 'add'}
-    />
-</>
-    );
+      <BookForm 
+          isOpen={isModalOpen || !!editingBook}
+          onClose={() => {
+              setIsModalOpen(false);
+              setEditingBook(null);
+          }}
+          onSubmit={editingBook ? handleEditBook : handleAddBook}
+          initialData={editingBook}
+          mode={editingBook ? 'edit' : 'add'}
+      />
+    </>
+  );
 }
 
 export default App;

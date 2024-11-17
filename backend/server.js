@@ -87,7 +87,7 @@ app.get('/api/books/stats', async (req, res) => {
     try {
         const [totalBooks] = await db.query('SELECT COUNT(*) as total FROM books');
         const [authorCount] = await db.query('SELECT COUNT(DISTINCT author) as total FROM books');
-        const [latestBook] = await db.query('SELECT * FROM books ORDER BY created_at DESC LIMIT 1');
+        const [latestBook] = await db.query('SELECT * FROM books ORDER BY published_at DESC LIMIT 1');
         const [oldestBook] = await db.query('SELECT * FROM books ORDER BY published_at ASC LIMIT 1');
 
         res.status(200).json({

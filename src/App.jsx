@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BookGrid from "./components/BookGrid";
-import BookCard from "./components/bookCard";
+import BookCard from "./components/BookCard";
 import BookForm from "./components/BookForm";
 import axios from "axios";
 

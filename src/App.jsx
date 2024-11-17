@@ -4,7 +4,7 @@ import BookCard from "./components/bookCard";
 import BookForm from "./components/BookForm";
 import axios from "axios";
 
-const url = 'http://localhost:8000'
+const url = import.meta.env.VITE_APP_URL || 'http://localhost:8000';
 
 function App() {
   const [latestBook, setLatestBook] = useState({})

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BookCard from "./bookCard";
 
-const url = 'http://localhost:8000'
+const url = import.meta.env.VITE_APP_URL || 'http://localhost:8000';
 
 const BookGrid = ({ isSearching, searchResults, onEdit, onDelete }) => {
     const [books, setBooks] = useState([]);
